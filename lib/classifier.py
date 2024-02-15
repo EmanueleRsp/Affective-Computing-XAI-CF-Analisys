@@ -11,14 +11,14 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix
 import joblib
-from .utils.path import PATH, DIR, CLASSIFIERS, CLS_METHOD
-from .utils.attribute_specifications import ATTRIBUTES, DATA_LABELS, CLASS_LABELS
+from lib.utils.path import PATH, DIR, CLASSIFIERS
+from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS, CLASS_LABELS
 
 
 class Classifier:
     """Classify the data."""
 
-    def __init__(self, data):
+    def __init__(self, data, model):
         """Initialize the classifier."""
 
         self.data = data
@@ -29,7 +29,7 @@ class Classifier:
             'y_test': pd.DataFrame()
         }
 
-        self.class_method = CLS_METHOD
+        self.class_method = model
         if self.class_method == CLASSIFIERS[0]:
             self.model = MLPClassifier(random_state=0)
         else:

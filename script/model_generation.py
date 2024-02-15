@@ -7,7 +7,7 @@ from lib.classifier import Classifier
 from lib.utils.path import PATH
 from lib.data_explorer import DataExplorer
 from lib.data_preprocessor import DataPreprocessor
-from lib.utils.path import DIR
+from lib.utils.path import DIR, CLS_METHOD
 
 FORCE_MODEL_UPDATE = True
 STEPS_LIMIT = 3
@@ -57,7 +57,7 @@ if STEPS_LIMIT == 2:
 
 for i in range(TESTS_NUMBER):
     # Generate classifier and partition the data
-    c = Classifier(dataset)
+    c = Classifier(dataset, CLS_METHOD)
     c.segregation()
 
     # Look for an existing model

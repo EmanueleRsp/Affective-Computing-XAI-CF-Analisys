@@ -20,7 +20,7 @@ dp = DataPreprocessor(dataset)
 dataset = dp.preprocess()
 
 # Load the model
-c = Classifier(dataset)
+c = Classifier(dataset, CLS_METHOD)
 if not c.load_config():
     print(f'ERROR: Model not found for {CLS_METHOD} with {PREP_METHOD} '
           'pre-processing method, please execute "model_generation.py" before.')
