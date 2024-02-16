@@ -1,0 +1,7 @@
+sample,jaccard_index,original_class,MLPC_class,MLPC,SVC_class,SVC
+12630,1.0,3,3,{'E4_EDA'},3,{'E4_EDA'}
+13728,0.2857142857142857,3,3,"{'E4_IBI', 'lowAlpha', 'highBeta', 'E4_HR', 'delta', 'lowBeta'}",3,"{'E4_IBI', 'E4_TEMP', 'highBeta'}"
+16162,0.42857142857142855,2,2,"{'lowGamma', 'E4_TEMP', 'E4_IBI', 'Attention', 'Meditation', 'highBeta', 'y', 'z', 'delta', 'E4_EDA', 'highAlpha'}",2,"{'theta', 'E4_IBI', 'x', 'Meditation', 'lowAlpha', 'y', 'z', 'delta', 'E4_EDA'}"
+37451,1.0,2,2,"{'E4_IBI', 'E4_TEMP', 'lowGamma'}",2,"{'E4_IBI', 'E4_TEMP', 'lowGamma'}"
+44888,1.0,4,4,{'E4_IBI'},4,{'E4_IBI'}
+45287,1.0,4,4,"{'E4_IBI', 'lowBeta', 'lowGamma'}",4,"{'E4_IBI', 'lowBeta', 'lowGamma'}"

@@ -18,8 +18,8 @@ class Explainer:
         """Initialize the explainer."""
 
         self.samples = samples
-        self.data = data.X
-        self.classes = data.y
+        self.data = data['X']
+        self.classes = data['Y']
         self.model = model
         self.timeout = timeout
 
@@ -135,13 +135,13 @@ class Explainer:
         prob_pred_label = np.argmax(self.model.predict_proba([sample_data])[0]) + 1
         cls_pred_label = self.model.predict([sample_data])[0]
 
-        # if prob_pred_label != original_label:
-        #     print(f"Sample {sample} is misclassified by probability function "
-        #           f"(label: {original_label}, "
-        #           f"probability prediction: {prob_pred_label}, "
-        #           f"{CLS_METHOD} prediction: {cls_pred_label}"
-        #           "), move on to the next one!")
-        #     return None, None, None
+        if prob_pred_label != original_label:
+            print(f"Sample {sample} is misclassified by probability function "
+                  f"(label: {original_label}, "
+                  f"probability prediction: {prob_pred_label}, "
+                  f"{CLS_METHOD} prediction: {cls_pred_label}"
+                  "), move on to the next one!")
+            return None, None, None
 
         print(f"Sample {sample}: "
               f"label={original_label}, "

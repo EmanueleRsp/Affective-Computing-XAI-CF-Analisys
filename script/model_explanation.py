@@ -19,6 +19,11 @@ dataset = pd.read_csv(PATH['dataset'])
 dp = DataPreprocessor(dataset)
 dataset = dp.preprocess()
 
+# Divide dataset in features and targets
+class_columns = [ATTRIBUTES[sample] for sample in iter(CLASS_LABELS)]
+X = dataset.drop(columns=class_columns, axis=1)
+y = dataset[class_columns]
+
 # Load the model
 c = Classifier(dataset, CLS_METHOD)
 if not c.load_config():
@@ -29,11 +34,6 @@ if not c.load_config():
           f"- Execution time: {end_time - start_time:.3f} seconds.")
     sys.exit(1)
 print('Model successfully loaded.')
-
-# Divide dataset in features and targets
-class_columns = [ATTRIBUTES[sample] for sample in iter(CLASS_LABELS)]
-X = dataset.drop(columns=class_columns, axis=1)
-y = dataset[class_columns]
 
 # Sample some data for each class
 SAMPLES = [1, 9, 50, 70, 99, 127, 1000, 1100, 1300, 1910, 1916,
