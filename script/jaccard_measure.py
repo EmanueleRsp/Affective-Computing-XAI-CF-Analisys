@@ -1,12 +1,13 @@
 """Compute the Jaccard measure between two model counterfactuals"""
 
 import sys
+import os
 import pandas as pd
 from lib.timer import Timer
 from lib.data_preprocessor import DataPreprocessor
 from lib.classifier import Classifier
 from lib.jaccard_evaluer import JaccardEvaluer
-from lib.utils.path import PATH, CLASSIFIERS, PREP_METHOD
+from lib.utils.path import PATH, CLASSIFIERS, PREP_METHOD, DIR
 from lib.utils.attribute_specifications import ATTRIBUTES, CLASS_LABELS, DATA_LABELS
 
 # Start timing
@@ -41,12 +42,20 @@ print('Models successfully loaded.')
 # Compute Jaccard values
 j = JaccardEvaluer(
     data={'dataset': dataset, 'X': X, 'y': y},
-    path='jaccard_indexes.csv'
+    path=os.path.join(DIR['raw_data'], 'jaccard_indexes.csv')
 )
 j.sample_data()
 j.compute_jaccard(clfs=clfs)
-j.plot_jaccard_hist(clfs=clfs)
-j.plot_feature_importance(clfs=clfs)
+
+# Plotting results
+j.plot_jaccard_hist(
+    clfs=clfs,
+    path=os.path.join('img', 'jaccard_measure', 'jaccard_indexes_histogram.png')
+)
+j.plot_feature_importance(
+    clfs=clfs,
+    path=os.path.join('img', 'jaccard_measure', 'features_importance.png')
+)
 
 # End timing
 timer.end()
