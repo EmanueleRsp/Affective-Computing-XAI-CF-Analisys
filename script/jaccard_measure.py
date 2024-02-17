@@ -4,6 +4,7 @@ import sys
 import time
 import warnings
 import pandas as pd
+import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from cfnow import find_tabular
@@ -184,12 +185,36 @@ plt.text(mean + std_dev + 0.01, 50,
          f'Std.dev: {round(std_dev, 3)}', rotation=90, verticalalignment='bottom')
 # Labels
 plt.legend(loc='best')
-plt.title('Jaccard index histogram')
+plt.title(f"Distribution of Jaccard index between "
+          f"{', '.join([c.class_method for c in clfs])}")
 plt.xlabel('Jaccard index')
 plt.ylabel('Frequency')
 # Save
 plt.savefig('jaccard_indexes_histogram.png')
 plt.close()
+
+# Computing most common features
+common_features = {}
+for c in clfs:
+    common_features[c.class_method] = \
+        {feat: sum(feat in row for row in result_df[c.class_method + '_features'])
+         for feat in data_columns}
+
+# Create dataframe
+data = []
+for model, feat in common_features.items():
+    for key, value in feat.items():
+        data.append([model, key, value])
+df = pd.DataFrame(data, columns=['Model', 'Feature', 'Frequency'])
+
+# Plot
+sns.barplot(x='Frequency', y='Feature', hue='Model', data=df)
+plt.title('Features importance')
+plt.xlabel('Frequency')
+plt.ylabel('Features')
+plt.tight_layout()
+# Save
+plt.savefig('features_importance.png')
 
 # End timing
 seconds(time.time(), START_TIME)

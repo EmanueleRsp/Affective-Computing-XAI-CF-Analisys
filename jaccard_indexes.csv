@@ -1,4 +1,4 @@
-sample,jaccard_index,original_class,MLPC_class,MLPC,SVC_class,SVC
+sample,jaccard_index,original_class,MLPC_class,MLPC_features,SVC_class,SVC_features
 4,0.375,4,4,"{'z', 'E4_TEMP', 'E4_IBI', 'E4_HR', 'E4_BVP'}",4,"{'E4_EDA', 'E4_TEMP', 'E4_IBI', 'theta', 'highAlpha', 'E4_HR'}"
 6,0.875,4,4,"{'z', 'E4_EDA', 'E4_TEMP', 'E4_IBI', 'y', 'highAlpha', 'E4_HR', 'E4_BVP'}",4,"{'z', 'E4_EDA', 'E4_TEMP', 'E4_IBI', 'y', 'E4_HR', 'E4_BVP'}"
 34,0.6,4,4,"{'z', 'lowGamma', 'E4_TEMP', 'y', 'E4_HR'}",4,"{'y', 'E4_HR', 'E4_TEMP'}"
