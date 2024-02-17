@@ -25,7 +25,7 @@ class JaccardEvaluer:
 
     data_columns = [ATTRIBUTES[sample] for sample in iter(DATA_LABELS)]
 
-    def __init__(self, data, path):
+    def __init__(self, data, path='jaccard_indexes.csv'):
         """
             Initialize the JaccardEvaluer class.
 

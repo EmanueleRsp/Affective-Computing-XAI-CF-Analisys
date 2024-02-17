@@ -1,5 +1,6 @@
 """Script used for some post-process plots"""
 
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -65,5 +66,5 @@ plt.xlabel('max_iter')
 plt.ylabel('mean_test_score')
 plt.title('Mean test score for different params and scaler (MLP)')
 plt.legend()
-plt.savefig('img/score_plots/mlp_mean_test_score_zoom.png')
+plt.savefig(os.path.join('img', 'model_score', 'mlp_mean_test_score_zoom.png'))
 plt.close()
