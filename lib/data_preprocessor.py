@@ -1,8 +1,8 @@
 """Ensure data cleaning, reduction and transformation before classification."""
 
 from sklearn.preprocessing import RobustScaler, StandardScaler, MinMaxScaler
-from .utils.path import PATH, PREP_METHOD
-from .utils.attribute_specifications import ATTRIBUTES, DATA_LABELS
+from lib.utils.path import PATH, PREP_METHOD
+from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS
 
 
 class DataPreprocessor:

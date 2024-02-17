@@ -5,7 +5,7 @@ import warnings
 import pandas as pd
 import numpy as np
 from cfnow import find_tabular
-from .utils.path import DIR, CLS_METHOD
+from lib.utils.path import DIR, CLS_METHOD
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
@@ -18,8 +18,8 @@ class Explainer:
         """Initialize the explainer."""
 
         self.samples = samples
-        self.data = data.X
-        self.classes = data.y
+        self.data = data['X']
+        self.classes = data['Y']
         self.model = model
         self.timeout = timeout
 

@@ -4,8 +4,8 @@ import os
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-from .utils.path import DIR, PREP_METHOD
-from .utils.attribute_specifications import (
+from lib.utils.path import DIR, PREP_METHOD
+from lib.utils.attribute_specifications import (
     ATTRIBUTES, CLASS_LABELS, DATA_LABELS, BRAINWAVE_BANDS
 )
 

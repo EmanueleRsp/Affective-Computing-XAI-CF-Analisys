@@ -1,14 +1,15 @@
 """Use cfnow library to plot some counterfactual explanations on the model trained"""
 
 import os
-import time
 import shutil
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from lib.timer import Timer
 from lib.utils.path import DIR
 
 # Start timing
-start_time = time.time()
+timer = Timer()
+timer.start()
 
 # Sample 20 random index from dataset
 SAMPLES = [1, 9, 50, 70, 99, 127, 1000, 1100, 1300, 1910, 1916,
@@ -90,6 +91,4 @@ for sample in SAMPLES:
     plt.close()
 
 # End timing
-end_time = time.time()
-print(f"{str(__file__).rsplit('/', maxsplit=1)[-1]} "
-      f"- Execution time: {end_time - start_time:.3f} seconds.")
+timer.end()
