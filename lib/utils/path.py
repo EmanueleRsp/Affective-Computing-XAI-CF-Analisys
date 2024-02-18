@@ -27,7 +27,7 @@ CLASSIFIERS = ['MLPC', 'SVC']
 # Define the method and classifier used in the project
 PREP_METHOD = METHODS[1]
 CLS_METHOD = CLASSIFIERS[1]
-ROOT = CLS_METHOD + '-' + PREP_METHOD
+ROOT = os.path.join('works', CLS_METHOD + '-' + PREP_METHOD)
 
 # Define the directories used in the project
 DIR = {
