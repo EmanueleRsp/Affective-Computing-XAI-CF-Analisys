@@ -1,5 +1,11 @@
-"""Main file for the program."""
+"""
+This module contains the main script for generating machine learning models.
 
+The script in this module is used to train machine learning models on a given dataset.
+It includes steps for data preprocessing, model training, hyperparameter tuning, 
+model evaluation, and saving the trained model.
+
+"""
 import sys
 import pandas as pd
 from lib.timer import Timer

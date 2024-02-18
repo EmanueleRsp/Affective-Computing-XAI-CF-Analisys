@@ -1,5 +1,12 @@
-"""Use cfnow library to plot some counterfactual explanations on the model trained"""
+"""
+This module uses the cfnow library to generate and plot 
+counterfactual explanations for a trained model.
 
+The cfnow library is a powerful tool for interpreting machine learning models. 
+It provides methods for generating counterfactual explanations, which can help 
+understand how a model makes its predictions. This module uses these capabilities 
+to generate and plot counterfactual explanations for a trained model on a random graph.
+"""
 import os
 import shutil
 import matplotlib.pyplot as plt

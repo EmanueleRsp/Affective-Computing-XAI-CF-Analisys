@@ -1,5 +1,16 @@
-"""Class to compute Jaccard values between classifiers"""
+"""
+This module contains the JaccardEvaluator class.
 
+The JaccardEvaluator class is used to compute the Jaccard similarity coefficient
+between the predictions of different classifiers. This coefficient measures 
+the similarity between two sets and is defined as the size of the intersection 
+divided by the size of the union of the sets.
+
+Typical usage example:
+
+    >>> evaluator = JaccardEvaluator(classifier1, classifier2)
+    >>> jaccard_index = evaluator.compute_jaccard()
+"""
 import warnings
 import pandas as pd
 import numpy as np
@@ -12,7 +23,16 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 def jaccard_similarity(*sets):
-    """Compute jaccard value for sample_size sets"""
+    """
+    Compute the Jaccard similarity coefficient for a given set of sets.
+
+    Parameters:
+    sets (tuple): A tuple of sets for which the Jaccard similarity coefficient needs to be computed.
+
+    Returns:
+    float: The Jaccard similarity coefficient, which is a value between 0 and 1. 
+        If the union of all sets is empty, returns None.
+    """
     intersection = set.intersection(*sets)
     union = set.union(*sets)
     if len(union) == 0:
@@ -21,20 +41,38 @@ def jaccard_similarity(*sets):
 
 
 class JaccardEvaluer:
-    """Measure Jaccard Values between classifiers"""
+    """
+    The JaccardEvaluer class is used to measure the Jaccard values between classifiers.
 
+    Attributes:
+        data (dict): Contains dataset, X, y.
+        path (str): The path to save the evaluation results (csv file).
+        samples (list): List of selected samples.
+        percentage (float): The percentage of data to sample.
+        timeout (int): Timeout value for computation.
+        save_freq (int): Frequency of saving results.
+
+    Methods:
+        __init__(self, data, path='jaccard_indexes.csv'): Initializes the JaccardEvaluer class.
+        sample_data(self, percentage=0.1): Samples the data.
+        compute_jaccard(self, clfs, timeout=15, save_freq=25):
+            Computes Jaccard values between classifiers.
+    """
+
+    # Data columns labels for the dataset
     data_columns = [ATTRIBUTES[sample] for sample in iter(DATA_LABELS)]
 
     def __init__(self, data, path='jaccard_indexes.csv'):
         """
-            Initialize the JaccardEvaluer class.
+        Initialize the JaccardEvaluer class.
 
+        Parameters:
             data (dict): Contains dataset, X, y.
             path (str): The path to save the evaluation results (csv file).
 
-            Returns:
-                None
-            """
+        Returns:
+            None
+        """
 
         self.data = data
         self.path = path
@@ -44,15 +82,25 @@ class JaccardEvaluer:
         self.save_freq = None
 
     def sample_data(self, percentage=0.1):
-        """Sample the data"""
+        """Sample the data
+
+        This method samples the data based on the specified percentage. 
+        It selects a subset of the dataset randomly and sets it 
+        as the samples attribute of the JaccardEvaluer object.
+
+        Parameters:
+            percentage (float): The percentage of data to sample. Defaults to 0.1.
+
+        Returns:
+            None
+        """
 
         # Initialize percentage
         self.percentage = percentage
 
         # Choose samples
         sample_size = int(np.round(self.data['dataset'].shape[0] * self.percentage))
-        self.samples = sorted(
-            self.data['dataset'].sample(n=sample_size, random_state=42).index)
+        self.samples = self.data['dataset'].sample(n=sample_size, random_state=42).index
         print(f"Selected indexes: {len(self.samples)}")
 
         # Delete samples already computed
@@ -65,7 +113,21 @@ class JaccardEvaluer:
             self.samples = [data for data in self.samples if data not in read_samples]
 
     def compute_jaccard(self, clfs, timeout=15, save_freq=25):
-        """Compute Jaccard values between classifiers"""
+        """Compute Jaccard values between classifiers
+
+        This method computes the Jaccard values between classifiers for each sample in the dataset.
+        It generates counterfactual objects using the find_tabular function and calculates the
+        Jaccard index based on the changed features. The results are saved periodically and
+        the final results are printed once all samples are processed.
+
+        Parameters:
+            clfs (list): List of classifiers.
+            timeout (int): Timeout value for computation. Defaults to 15.
+            save_freq (int): Frequency of saving results. Defaults to 25.
+
+        Returns:
+            None
+        """
 
         self.timeout = timeout
         self.save_freq = save_freq
@@ -129,7 +191,22 @@ class JaccardEvaluer:
         print(f"COMPUTED JACCARD INDEX FOR ALL {len(self.samples)} SAMPLES!")
 
     def plot_jaccard_hist(self, clfs, path='jaccard_indexes_histogram.png'):
-        """Plot Jaccard results"""
+        """Plot Jaccard results
+
+        This method plots the Jaccard results by creating
+        a bar plot of the feature importance.
+        It reads the results from the specified path and computes
+        the common features for each classifier.
+        The resulting bar plot shows the frequency of each feature
+        for each classifier.
+
+        Parameters:
+            clfs (list): List of classifiers.
+            path (str): The path to save the plot.
+
+        Returns:
+            None
+        """
 
         print("Plotting jaccard index values distribution...")
 
@@ -166,7 +243,20 @@ class JaccardEvaluer:
         plt.close()
 
     def plot_feature_importance(self, clfs, path='features_importance.png'):
-        """Plot feature importance"""
+        """Plot feature importance
+
+        This method plots the feature importance by creating a bar plot.
+        It reads the results from the specified path and computes the
+        common features for each classifier.
+        The resulting bar plot shows the frequency of each feature for each classifier.
+
+        Parameters:
+            clfs (list): List of classifiers.
+            path (str): The path to save the plot.
+
+        Returns:
+            None
+        """
 
         print("Plotting features importance...")
 
@@ -196,7 +286,21 @@ class JaccardEvaluer:
         plt.savefig(path)
 
     def _save_results(self, jaccard_dict, sample_num):
-        """Save jaccard indexes computed to file"""
+        """Save jaccard indexes computed to file
+
+        This method saves the computed Jaccard indexes to a file.
+        It takes a dictionary of Jaccard indexes and the number of samples as input.
+        The method appends the Jaccard indexes to an existing file or creates
+        a new file if it doesn't exist.
+        It also prints the progress of saving the samples.
+
+        Parameters:
+            jaccard_dict (dict): Dictionary of Jaccard indexes.
+            sample_num (int): Number of samples.
+
+        Returns:
+            None
+        """
 
         print(f"SAVING LASTS {sample_num} SAMPLE(S)...")
 
@@ -222,7 +326,23 @@ class JaccardEvaluer:
                   f"REMAINING: {sample_size - sample_num}")
 
     def _jaccard_dict_row(self, sample, sample_sets, clfs):
-        """Create dict for Jaccard index computed on a sample"""
+        """Create dict for Jaccard index computed on a sample
+
+        This method takes a sample, sample sets, and classifiers
+        as input and computes the Jaccard index for the sample.
+        It creates a dictionary containing the Jaccard index,
+        the original class of the sample, and the predicted class
+        and set features for each model.
+
+        Parameters:
+            sample (int): The index of the sample.
+            sample_sets (list): List of sets for the sample.
+            clfs (list): List of classifiers.
+
+        Returns:
+            dict: Dictionary containing the Jaccard index,
+            original class, predicted class, and set features for each model.
+        """
 
         # Compute jaccard index
         jaccard_index = jaccard_similarity(*sample_sets)

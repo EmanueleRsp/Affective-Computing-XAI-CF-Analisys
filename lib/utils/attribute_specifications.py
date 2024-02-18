@@ -1,7 +1,23 @@
-"""This file contains the specifications of the attributes in the dataset."""
+"""
+Specifications of the attributes in the dataset.
+================================================
+
+The file defines various constants related to the attributes in the dataset. 
+It includes the mapping of attribute indices to their names, class labels, 
+data labels, skewed data indices, brainwave bands, and categorical labels.
+
+Constants:
+    `ATTRIBUTES` (dict): A dictionary mapping attribute indices to their names.
+    `CLASS_LABELS` (pandas.Series): A series containing class labels.
+    `DATA_LABELS` (pandas.Series): A series containing data labels.
+    `SKEWED_DATA` (pandas.Series): A series containing indices of skewed data.
+    `BRAINWAVE_BANDS` (pandas.Series): A series containing brainwave band indices.
+    `CATEGORICAL_LABELS` (pandas.Series): A series containing indices of categorical labels.
+"""
 
 import pandas as pd
 
+# Dict mapping attribute indices to their names
 ATTRIBUTES = {
     0: 'seconds',
     1: 'external_arousal',
@@ -30,12 +46,17 @@ ATTRIBUTES = {
     24: 'Meditation'
 }
 
+# Class labels indices
 CLASS_LABELS = pd.Series(range(6, 7))
 
+# Data labels indices
 DATA_LABELS = pd.Series(range(7, 25))
 
+# Skewed data indices
 SKEWED_DATA = pd.Series([10, 13, 16, 17, 18, 19, 20, 21, 22, 23])
 
+# Brainwave bands indices
 BRAINWAVE_BANDS = pd.Series(range(16, 24))
 
+# Categorical labels indices
 CATEGORICAL_LABELS = pd.Series([6, 15, 24])

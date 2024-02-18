@@ -1,11 +1,30 @@
-"""Define directories and paths managed in the project."""
+"""
+Defines directories and paths managed in the project.
+================================================
+
+This file defines the directories and paths used in the project. 
+It includes definitions for various directories such as raw_data, 
+raw_data_img, csv_dir, conf_dir, preprocessed_data_img, results, 
+and explanation.
+
+It also defines file names such as dataset, prep, params, and model. 
+
+Additionally, it defines paths for dataset, preprocessed_dataset, 
+parameters, model, results, x_train, x_test, y_train, and y_test.
+
+The file also includes code to generate each directory if it does not already exist, 
+and checks if the dataset exists before continuing the program.
+
+"""
 
 import os
 import sys
 
+# Define options for the method and classifier to use in the project
 METHODS = ['No normalization', 'MinMaxScaler', 'StandardScaler', 'RobustScaler']
 CLASSIFIERS = ['MLPC', 'SVC']
 
+# Define the method and classifier used in the project
 PREP_METHOD = METHODS[1]
 CLS_METHOD = CLASSIFIERS[1]
 ROOT = CLS_METHOD + '-' + PREP_METHOD

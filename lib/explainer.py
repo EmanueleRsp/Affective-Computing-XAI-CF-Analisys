@@ -1,5 +1,15 @@
-"""Use cfnow library to explain models"""
+"""
+This module uses the cfnow library to explain models.
 
+The cfnow library is a powerful tool for interpreting machine learning models.
+It provides methods for generating counterfactual explanations, 
+which can help understand how a model makes its predictions.
+
+Typical usage example:
+
+    >>> explainer = cfnow.Explainer(model)
+    >>> explanation = explainer.explain(data)
+"""
 import os
 import warnings
 import pandas as pd
@@ -10,12 +20,41 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 class Explainer:
-    """Explain the model."""
+    """Explain the model.
 
+    This class provides methods to explain a machine learning model
+    by computing counterfactuals and Shapley values.
+    It takes a set of samples, data, model, and an optional timeout parameter
+    as input during initialization.
+
+    Attributes:
+        samples (list): The indices of the samples to be explained.
+        data (pandas.DataFrame): The input features.
+            It contains the input features (X) and the target classes (Y).
+        classes (pandas.DataFrame): The target classes.
+        model (object): The machine learning model.
+        timeout (float): The maximum time allowed for computing counterfactuals.
+
+    Methods:
+        plot_counterfactuals(mod=None): Compute and plot counterfactuals for each sample.
+        compute_shapley_values(): Compute Shapley values for each sample.
+
+    Private Methods:
+        _generate_cf_obj(sample): Generate a counterfactual object for a given sample.
+    """
+
+    # Available graph modes
     MOD = ['greedy', 'countershapley', 'constellation']
 
     def __init__(self, samples, data, model, timeout=None):
-        """Initialize the explainer."""
+        """Initialize the explainer.
+
+        Args:
+            samples (list): The indices of the samples to be explained.
+            data (dict): The input features and target classes.
+            model (object): The machine learning model.
+            timeout (float, optional): The maximum time allowed for computing counterfactuals.
+        """
 
         self.samples = samples
         self.data = data['X']
@@ -24,7 +63,19 @@ class Explainer:
         self.timeout = timeout
 
     def plot_counterfactuals(self, mod=None):
-        """Compute counterfactual for each sample"""
+        """Compute counterfactual for each sample
+
+        This method computes the counterfactual for each sample in the Explainer object.
+        It generates counterfactual objects using the _generate_cf_obj method 
+        and generates plots for each counterfactual.
+
+        Args:
+            mod (list, optional): The graph modes to be generated. 
+                Defaults to None, which generates all available modes.
+
+        Returns:
+            None
+        """
 
         # Default: all
         if mod is None:
@@ -70,7 +121,18 @@ class Explainer:
                 )
 
     def compute_shapley_values(self):
-        """Compute Shapley values"""
+        """Compute Shapley values
+
+        This method computes the Shapley values for each sample.
+        Shapley values are a method for assigning importance scores
+        to features in a model. They quantify the contribution of each feature
+        towards the prediction made by the model.
+        The Shapley values are computed using the counterfactual objects
+        generated for each sample.
+
+        Returns:
+            None
+        """
 
         # Choose sample already analyzed
         new_samples = []
@@ -124,7 +186,20 @@ class Explainer:
             )
 
     def _generate_cf_obj(self, sample):
-        """Generate counterfactual object"""
+        """Generate counterfactual object
+
+        This method generates a counterfactual object for a given sample. 
+        It takes the sample index as input and returns the counterfactual object,
+        the factual class, and the counterfactual class.
+
+        Parameters:
+            sample (int): The index of the sample.
+
+        Returns:
+            cf_obj (object): The counterfactual object.
+            factual_class (int): The factual class of the sample.
+            counterfactual_class (int): The counterfactual class of the sample.
+        """
 
         sample_data = pd.Series(self.data.iloc[sample], name='Factual')
 

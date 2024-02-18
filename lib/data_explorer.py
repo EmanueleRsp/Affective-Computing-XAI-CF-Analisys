@@ -1,4 +1,15 @@
-"""Raw data analysis, to visualize and plot their characteristics."""
+"""
+This module contains the DataExplorer class.
+
+The DataExplorer class is used to visualize and plot the characteristics of a given dataset.
+It includes methods for exploring the data, creating bar plots, temporal graphs, histograms,
+and box plots for different types of data (categorical, brainwave bands, and other data).
+
+Typical usage example:
+
+    >>> explorer = DataExplorer(data, directory)
+    >>> explorer.exploration()
+"""
 
 import os
 import matplotlib.image as mpimg
@@ -11,15 +22,32 @@ from lib.utils.attribute_specifications import (
 
 
 class DataExplorer:
-    """Explore the data."""
+    """Explore the data.
+
+    This class provides methods to explore and visualize data.
+
+    Attributes:
+        data (pandas.DataFrame): The data to be explored.
+        directory (str): The directory to save the exploration results.
+    """
 
     def __init__(self, data, directory):
-        """Initialize the data exploration."""
+        """Initialize the data exploration.
+
+        Args:
+            data (pandas.DataFrame): The data to be explored.
+            directory (str): The directory to save the exploration results.
+        """
+
         self.data = data
         self.directory = directory
 
     def exploration(self):
-        """Explore the data."""
+        """Explore the data.
+
+        This method performs various data exploration tasks, such as checking for null values,
+        duplicates, and creating visualizations of the data.
+        """
 
         print(f'Shape: {self.data.shape}')
 
@@ -60,7 +88,16 @@ class DataExplorer:
             self._data_plot(index, label)
 
     def _categorical_plot(self, index, label):
-        """Plot categorical data characteristics."""
+        """
+        Plot categorical data characteristics.
+
+        Parameters:
+        index (int): The index of the plot.
+        label (str): The label of the plot.
+
+        Returns:
+        None
+        """
         print(f'Plotting {label}...')
         index = str(index).zfill(2)
 
@@ -71,7 +108,16 @@ class DataExplorer:
         plt.close()
 
     def _create_bar(self, axs, label):
-        """Create bar plot of the data."""
+        """
+        Create a bar plot of the data.
+
+        Parameters:
+            axs (matplotlib.axes.Axes): The axes object to plot on.
+            label (str): The label of the data to plot.
+
+        Returns:
+            None
+        """
 
         counts = self.data[label].value_counts()
         axs.bar(counts.sample, counts.values)
@@ -82,7 +128,17 @@ class DataExplorer:
         axs.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     def _bw_plot(self, index, label):
-        """Plot brainwave band characteristics."""
+        """
+        Plot brainwave band characteristics.
+
+        Parameters:
+        index (int): The index of the brainwave band.
+        label (str): The label of the brainwave band.
+
+        Returns:
+        None
+        """
+
         print(f'Plotting {label} brainwave...')
         index = str(index).zfill(2)
 
@@ -105,8 +161,16 @@ class DataExplorer:
         plt.close()
 
     def create_temporal_graph(self, axs, label):
-        """Create temporal graph of the data."""
+        """
+            Create a temporal graph of the data.
 
+            Parameters:
+            axs (matplotlib.axes.Axes): The axes object to plot the graph on.
+            label (str): The label of the data to be plotted on the y-axis.
+
+            Returns:
+            None
+            """
         times = []
         values = []
 
@@ -122,7 +186,16 @@ class DataExplorer:
         axs.grid(True)
 
     def _data_plot(self, index, label):
-        """Plot data characteristics."""
+        """
+            Plot data characteristics.
+
+            Parameters:
+            index (int): The index of the data.
+            label (str): The label of the data.
+
+            Returns:
+            None
+            """
         print(f'Plotting {label}...')
         index = str(index).zfill(2)
 
@@ -163,7 +236,16 @@ class DataExplorer:
         plt.close()
 
     def _create_histogram(self, axs, label):
-        """Create histogram of the data."""
+        """
+        Create a histogram of the data.
+
+        Parameters:
+        axs (matplotlib.axes.Axes): The axes object to plot the histogram on.
+        label (str): The label of the data to plot.
+
+        Returns:
+        None
+        """
 
         axs.hist(self.data[label], bins=50)
         axs.set_xlabel(label)
@@ -172,7 +254,15 @@ class DataExplorer:
         axs.grid(True)
 
     def _create_box_plot(self, axs, label):
-        """Create box plot of the data."""
+        """Create box plot of the data.
+
+            Args:
+                axs (matplotlib.axes.Axes): The axes object to plot the box plot on.
+                label (str): The label of the data to create the box plot for.
+
+            Returns:
+                None
+            """
 
         # Create the box plot
         box_plot = axs.boxplot(self.data[label])
@@ -189,7 +279,16 @@ class DataExplorer:
         axs.grid(True)
 
     def create_bar_plot(self, axs, label):
-        """Create bar plot of the data."""
+        """
+        Create a bar plot of the data.
+
+        Parameters:
+            axs (matplotlib.axes.Axes): The axes object to plot on.
+            label (str): The label of the data to plot.
+
+        Returns:
+            None
+        """
 
         axs.bar(self.data[label], self.data[label])
         axs.set_xlabel(label)

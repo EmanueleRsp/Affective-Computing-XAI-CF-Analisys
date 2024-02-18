@@ -1,5 +1,22 @@
-"""Contains the Classifier class, which is used to classify the data."""
+"""
+This module contains the Classifier class.
 
+The Classifier class is used to classify data based on certain criteria or algorithms. 
+It includes methods for segregating the data into training and testing sets, 
+performing grid search to find the best parameters, calculating the accuracy of the model,
+saving and loading the model configuration, and generating results.
+
+Typical usage example:
+
+    >>> clf = Classifier(data, model)
+    >>> clf.segregation()
+    >>> clf.grid_search()
+    >>> clf.calculate_accuracy()
+    >>> clf.save_config()
+    >>> clf.load_config()
+    >>> clf.generate_results()
+
+"""
 import os
 import json
 import matplotlib.pyplot as plt
@@ -16,10 +33,42 @@ from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS, CLASS_LA
 
 
 class Classifier:
-    """Classify the data."""
+    """
+    Classify the data.
+
+    This class provides methods for classifying data using different models. It supports
+    segregation of data into training and testing sets, performing grid search to find the
+    best parameters, calculating the accuracy of the model, saving and loading the model
+    configuration, and generating results including accuracy, best parameters, grid search
+    results, and confusion matrix.
+
+    Attributes:
+        `data` (pd.DataFrame): The input data for classification.
+        `partition` (dict): A dictionary containing the segregated training and testing sets.
+        `class_method` (str): The classification model to be used.
+        `model` (object): The classification model object.
+        `grid` (dict): A dictionary containing the grid search results and best parameters.
+        `score` (float): The accuracy score of the model.
+        `y_pred` (array-like): The predicted labels for the testing set.
+
+    Methods:
+        `segregation()`: Segregate the data into training and testing sets.
+        `_get_parameters()`: Get the parameters for the model.
+        `grid_search(cval=5)`: Perform grid search to find the best parameters.
+        `calculate_accuracy()`: Calculate the accuracy of the model.
+        `save_config()`: Save the model configuration.
+        `load_config()`: Load the model configuration.
+        `generate_results()`: Generate results including accuracy, best parameters, grid search
+            results, and confusion matrix.
+    """
 
     def __init__(self, data, model):
-        """Initialize the classifier."""
+        """Initialize the classifier.
+
+        Args:
+            data (pd.DataFrame): The input data for classification.
+            model (str): The classification model to be used.
+        """
 
         self.data = data
         self.partition = {
@@ -44,7 +93,16 @@ class Classifier:
         self.y_pred = None
 
     def segregation(self):
-        """Segregate the data into training and testing sets."""
+        """Segregate the data into training and testing sets.
+
+            This method splits the data into training and testing sets 
+            using the train_test_split function from the scikit-learn library.
+            It assigns the training and testing data to the 'x_train', 'x_test',
+            'y_train', and 'y_test' attributes of the 'partition' dictionary.
+
+            Returns:
+                None
+            """
 
         print('Segregating the data into training and testing sets...')
         class_columns = [ATTRIBUTES[i] for i in iter(CLASS_LABELS)]
@@ -60,7 +118,17 @@ class Classifier:
         print(f'y_test shape: {self.partition["y_test"].shape}')
 
     def _get_parameters(self):
-        """Get the parameters for the model."""
+        """Get the parameters for the model.
+
+            Returns:
+                dict: A dictionary containing the parameters for the model.
+                      The specific parameters depend on the selected classifier.
+                      For the Multi-layer Perceptron classifier, the dictionary
+                      contains the 'max_iter' parameter with possible values of
+                      [100, 200, 300]. For the Support Vector Classifier, the
+                      dictionary contains the 'C' parameter with possible values
+                      of [1, 10, 100] and the 'probability' parameter set to True.
+            """
 
         # Multi-layer Perceptron
         if self.class_method == CLASSIFIERS[0]:
@@ -75,7 +143,13 @@ class Classifier:
         }
 
     def grid_search(self, cval=5):
-        """Perform grid search to find the best parameters."""
+        """
+        Perform grid search to find the best parameters.
+
+        Parameters:
+        - cval (int): Number of cross-validation folds (default: 5)
+        """
+
         print('Performing grid search to find the best parameters and model...')
         grid = GridSearchCV(self.model, self._get_parameters(), cv=cval)
         grid.fit(self.partition['x_train'], ravel(self.partition['y_train']))
@@ -85,14 +159,26 @@ class Classifier:
         print(f'Best parameters found: {self.grid["best_params"]}')
 
     def calculate_accuracy(self):
-        """Calculate the accuracy of the model."""
+        """Calculate the accuracy of the model.
+
+            Returns:
+                float: The accuracy score of the model.
+            """
 
         print('Calculating the accuracy of the model...')
         self.y_pred = self.model.predict(self.partition['x_test'])
         self.score = accuracy_score(self.partition['y_test'], self.y_pred)
 
     def save_config(self):
-        """Save the model."""
+        """Save the model and its parameters.
+
+            This method saves the trained model and its best parameters to disk.
+            The model is saved using joblib.dump() function, and the parameters
+            are saved in a JSON file.
+
+            Returns:
+                None
+            """
 
         print('Saving settings...')
         joblib.dump(self.model, PATH['model'])
@@ -105,7 +191,7 @@ class Classifier:
         load the parameters which is based on in 'self.grid["best_parameters"]'.
 
         Returns:
-            :return bool: True if the model exists, else False.
+            bool: True if the model exists, else False.
         """
 
         if not os.path.exists(PATH['model']):
@@ -120,7 +206,14 @@ class Classifier:
         return True
 
     def generate_results(self):
-        """Generate results."""
+        """Generate results.
+
+            This method generates and prints the accuracy, best parameters,
+            and grid search results.
+            It also saves the accuracy score to a file and generates
+            a confusion matrix for each class.
+
+            """
         print('Generating results...')
 
         # Results

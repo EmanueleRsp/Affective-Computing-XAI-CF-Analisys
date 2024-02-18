@@ -1,4 +1,18 @@
-"""Ensure data cleaning, reduction and transformation before classification."""
+"""
+This module contains the DataPreprocessor class.
+
+The DataPreprocessor class is used to clean, reduce, and transform data 
+before it is used for classification. It includes methods for 
+handling missing values, encoding categorical variables, normalizing numerical variables, 
+and other preprocessing tasks.
+
+Typical usage example:
+
+    >>> preprocessor = DataPreprocessor(data)
+    >>> clean_data = preprocessor.clean_data()
+    >>> reduced_data = preprocessor.reduce_data()
+    >>> transformed_data = preprocessor.transform_data()
+"""
 
 from sklearn.preprocessing import RobustScaler, StandardScaler, MinMaxScaler
 from lib.utils.path import PATH, PREP_METHOD
@@ -6,10 +20,29 @@ from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS
 
 
 class DataPreprocessor:
-    """Preprocess the data."""
+    """Preprocess the data.
+
+    This class provides methods to preprocess the data, including removing missing values,
+    reducing the data, normalizing the data, and saving the preprocessed data.
+
+    Attributes:
+        data (DataFrame): The input dataset to be preprocessed.
+
+    Methods:
+        __init__(self, data): Initializes the DataPreprocessor object.
+        preprocess(self): Preprocesses the data and returns the preprocessed dataset.
+        reduce_data(self): Reduces the data by removing unnecessary columns.
+        normalize_data(self): Normalizes the data using different scaling methods.
+        save_preprocessed_data(self): Saves the preprocessed data to a CSV file.
+    """
 
     def __init__(self, data):
-        """Initialize the data preprocessing."""
+        """Initialize the DataPreprocessor class.
+
+        Args:
+            data (list): The input data to be preprocessed.
+        """
+
         self.data = data
 
     def preprocess(self):
@@ -30,7 +63,10 @@ class DataPreprocessor:
         return self.data
 
     def reduce_data(self):
-        """Reduce the data."""
+        """Reduce the data.
+
+        This method reduces the data by removing columns before the 'self_valence' column.
+        """
         print('Reducing the data...')
 
         # Remove columns before 'self_valence' column
@@ -38,7 +74,17 @@ class DataPreprocessor:
         self.data = self.data.iloc[:, sv_index:]
 
     def normalize_data(self):
-        """Transform the data."""
+        """Transform the data.
+
+        This method applies scaling to the numerical columns of the data
+        using the specified scaling method. It iterates over the data columns
+        and applies the appropriate scaler based on the PREP_METHOD.
+        The scaled values are then assigned back to the respective columns in the data.
+
+        Returns:
+            None
+        """
+
         print('Transforming the data...')
 
         # Normalize data
@@ -55,6 +101,11 @@ class DataPreprocessor:
             self.data[label] = scaler.fit_transform(self.data[label].values.reshape(-1, 1))
 
     def save_preprocessed_data(self):
-        """Save the preprocessed data."""
+        """Save the preprocessed data.
+
+        This method saves the preprocessed data to a CSV file.
+        The file path is specified by the constant PATH['preprocessed_dataset'].
+        The data is saved without including the index column.
+        """
         print('Saving the preprocessed data...')
         self.data.to_csv(PATH['preprocessed_dataset'], index=False)

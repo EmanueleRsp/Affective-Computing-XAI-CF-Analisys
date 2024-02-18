@@ -1,5 +1,11 @@
-"""Script used for some post-process plots"""
+"""
+This module contains scripts for generating post-process plots.
 
+The scripts in this module are used to visualize the results of a machine learning process.
+This includes generating plots such as bar plots, scatter plots, and others to understand
+the scores, performance, and other aspects of the models used.
+
+"""
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
