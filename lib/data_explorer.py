@@ -7,7 +7,9 @@ and box plots for different types of data (categorical, brainwave bands, and oth
 
 Typical usage example:
 
-    >>> explorer = DataExplorer(data, directory)
+    >>> import pandas as pd
+    >>> data = pd.read_csv('data.csv')
+    >>> explorer = DataExplorer(data, 'save_dir')
     >>> explorer.exploration()
 """
 
@@ -15,8 +17,7 @@ import os
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-from lib.utils.path import DIR, PREP_METHOD
-from lib.utils.attribute_specifications import (
+from params.attribute_specifications import (
     ATTRIBUTES, CLASS_LABELS, DATA_LABELS, BRAINWAVE_BANDS
 )
 
@@ -28,19 +29,29 @@ class DataExplorer:
 
     Attributes:
         data (pandas.DataFrame): The data to be explored.
-        directory (str): The directory to save the exploration results.
+        save_dir (str): The directory to save the exploration results.
+        raw_dir (str): raw data directory (if exploring prep data).
+            Default None.
+        prep_method (str): prep method used (if exploring prep data).
+            Default None.
     """
 
-    def __init__(self, data, directory):
+    def __init__(self, data, save_dir, raw_dir=None, prep_method=None):
         """Initialize the data exploration.
 
         Args:
             data (pandas.DataFrame): The data to be explored.
-            directory (str): The directory to save the exploration results.
+            save_dir (str): The directory to save the exploration results.
+            raw_dir (str): raw data directory (if exploring prep data).
+                Default None.
+            prep_method (str): prep method used (if exploring prep data).
+                Default None.
         """
 
         self.data = data
-        self.directory = directory
+        self.save_dir = save_dir
+        self.raw_dir = raw_dir
+        self.prep_method = prep_method
 
     def exploration(self):
         """Explore the data.
@@ -77,7 +88,7 @@ class DataExplorer:
             self._categorical_plot(index, label)
 
         # Plot brainwave band characteristics
-        if self.directory == DIR['raw_data_img']:
+        if self.raw_dir is None:
             for index, label in bw_columns.items():
                 self._bw_plot(index, label)
 
@@ -104,7 +115,7 @@ class DataExplorer:
         # Bar plot of the data
         _, axis = plt.subplots()
         self._create_bar(axis, label)
-        plt.savefig(os.path.join(self.directory, f'{index}_{label}_bar.png'))
+        plt.savefig(os.path.join(self.save_dir, f'{index}_{label}_bar.png'))
         plt.close()
 
     def _create_bar(self, axs, label):
@@ -143,13 +154,13 @@ class DataExplorer:
         index = str(index).zfill(2)
 
         # Temporal graph of the data
-        if self.directory == DIR['raw_data_img']:
+        if self.raw_dir is None:
             _, axis = plt.subplots()
             self.create_temporal_graph(axis, label)
         else:
             fig, axs = plt.subplots(1, 2, figsize=(15, 5), constrained_layout=True)
-            fig.suptitle(f'{label} - Before and after {PREP_METHOD}')
-            path = os.path.join(DIR['raw_data_img'], f'temporal_graph_{index}_{label}.png')
+            fig.suptitle(f'{label} - Before and after {self.prep_method}')
+            path = os.path.join(self.raw_dir, f'temporal_graph_{index}_{label}.png')
             img = mpimg.imread(path)
             axs[0].imshow(img)
             axs[0].axis('off')
@@ -157,7 +168,7 @@ class DataExplorer:
             box = axs[1].get_position()
             axs[1].set_position([box.x0, box.y0, box.width, box.height - 0.05])
             self.create_temporal_graph(axs[1], label)
-        plt.savefig(os.path.join(self.directory, f'temporal_graph_{index}_{label}.png'))
+        plt.savefig(os.path.join(self.save_dir, f'temporal_graph_{index}_{label}.png'))
         plt.close()
 
     def create_temporal_graph(self, axs, label):
@@ -200,13 +211,13 @@ class DataExplorer:
         index = str(index).zfill(2)
 
         # Histogram of the data
-        if self.directory == DIR['raw_data_img']:
+        if self.raw_dir is None:
             _, axis = plt.subplots()
             self._create_histogram(axis, label)
         else:
             fig, axs = plt.subplots(1, 2, figsize=(15, 5), constrained_layout=True)
-            fig.suptitle(f'{label} - Before and after {PREP_METHOD}')
-            path = os.path.join(DIR['raw_data_img'], f'histogram_{index}_{label}.png')
+            fig.suptitle(f'{label} - Before and after {self.prep_method}')
+            path = os.path.join(self.raw_dir, f'histogram_{index}_{label}.png')
             img = mpimg.imread(path)
             axs[0].imshow(img)
             axs[0].axis('off')
@@ -214,17 +225,17 @@ class DataExplorer:
             box = axs[1].get_position()
             axs[1].set_position([box.x0, box.y0, box.width, box.height - 0.05])
             self._create_histogram(axs[1], label)
-        plt.savefig(os.path.join(self.directory, f'histogram_{index}_{label}.png'))
+        plt.savefig(os.path.join(self.save_dir, f'histogram_{index}_{label}.png'))
         plt.close()
 
         # Box plot of the data
-        if self.directory == DIR['raw_data_img']:
+        if self.raw_dir is None:
             _, axis = plt.subplots()
             self._create_box_plot(axis, label)
         else:
             fig, axs = plt.subplots(1, 2, figsize=(15, 5), constrained_layout=True)
-            fig.suptitle(f'{label} - Before and after {PREP_METHOD}')
-            path = os.path.join(DIR['raw_data_img'], f'box_plot_{index}_{label}.png')
+            fig.suptitle(f'{label} - Before and after {self.prep_method}')
+            path = os.path.join(self.raw_dir, f'box_plot_{index}_{label}.png')
             img = mpimg.imread(path)
             axs[0].imshow(img)
             axs[0].axis('off')
@@ -232,7 +243,7 @@ class DataExplorer:
             box = axs[1].get_position()
             axs[1].set_position([box.x0, box.y0, box.width, box.height - 0.05])
             self._create_box_plot(axs[1], label)
-        plt.savefig(os.path.join(self.directory, f'box_plot_{index}_{label}.png'))
+        plt.savefig(os.path.join(self.save_dir, f'box_plot_{index}_{label}.png'))
         plt.close()
 
     def _create_histogram(self, axs, label):

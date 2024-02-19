@@ -5,17 +5,13 @@ The cfnow library is a powerful tool for interpreting machine learning models.
 It provides methods for generating counterfactual explanations, 
 which can help understand how a model makes its predictions.
 
-Typical usage example:
-
-    >>> explainer = cfnow.Explainer(model)
-    >>> explanation = explainer.explain(data)
 """
+
 import os
 import warnings
 import pandas as pd
 import numpy as np
 from cfnow import find_tabular
-from lib.utils.path import DIR, CLS_METHOD
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
@@ -62,7 +58,7 @@ class Explainer:
         self.model = model
         self.timeout = timeout
 
-    def plot_counterfactuals(self, mod=None):
+    def plot_counterfactuals(self, cls_method, exp_dir='explanation',  mod=None):
         """Compute counterfactual for each sample
 
         This method computes the counterfactual for each sample in the Explainer object.
@@ -72,6 +68,9 @@ class Explainer:
         Args:
             mod (list, optional): The graph modes to be generated. 
                 Defaults to None, which generates all available modes.
+            cls_method (str): classifier method used
+            exp_dir (str): directory to save graphs
+
 
         Returns:
             None
@@ -81,18 +80,18 @@ class Explainer:
         if mod is None:
             mod = self.MOD
         # Create dirs if not exist
-        if not os.path.exists(os.path.join(DIR['explanation'], 'greedy')):
-            os.makedirs(os.path.join(DIR['explanation'], 'greedy'))
-        if not os.path.exists(os.path.join(DIR['explanation'], 'counterShapley')):
-            os.makedirs(os.path.join(DIR['explanation'], 'counterShapley'))
-        if not os.path.exists(os.path.join(DIR['explanation'], 'constellation')):
-            os.makedirs(os.path.join(DIR['explanation'], 'constellation'))
+        if not os.path.exists(os.path.join(exp_dir, 'greedy')):
+            os.makedirs(os.path.join(exp_dir, 'greedy'))
+        if not os.path.exists(os.path.join(exp_dir, 'counterShapley')):
+            os.makedirs(os.path.join(exp_dir, 'counterShapley'))
+        if not os.path.exists(os.path.join(exp_dir, 'constellation')):
+            os.makedirs(os.path.join(exp_dir, 'constellation'))
 
         # Compute counterfactuals for each sample
         for sample in self.samples:
 
             # Generate cf_obj
-            cf_obj, _, _ = self._generate_cf_obj(sample)
+            cf_obj, _, _ = self._generate_cf_obj(sample, cls_method)
             if cf_obj is None:
                 continue
 
@@ -102,25 +101,25 @@ class Explainer:
             if self.MOD[0] in mod:
                 print('Generating greedy counterplot...')
                 counter_plot.greedy(
-                    os.path.join(DIR['explanation'], 'greedy',
+                    os.path.join(exp_dir, 'greedy',
                                  f'{sample}_greedy_counterplot.png')
                 )
 
             if self.MOD[1] in mod:
                 print('Generating counterShapley counterplot...')
                 counter_plot.countershapley(
-                    os.path.join(DIR['explanation'], 'counterShapley',
+                    os.path.join(exp_dir, 'counterShapley',
                                  f'{sample}_counterShapley_counterplot.png')
                 )
 
             if self.MOD[2] in mod:
                 print('Generating constellation counterplot...')
                 counter_plot.constellation(
-                    os.path.join(DIR['explanation'], 'constellation',
+                    os.path.join(exp_dir, 'constellation',
                                  f'{sample}_constellation_counterplot.png')
                 )
 
-    def compute_shapley_values(self):
+    def compute_shapley_values(self, cls_method, exp_dir='explanation'):
         """Compute Shapley values
 
         This method computes the Shapley values for each sample.
@@ -129,6 +128,10 @@ class Explainer:
         towards the prediction made by the model.
         The Shapley values are computed using the counterfactual objects
         generated for each sample.
+        
+        Args:
+            cls_method (str): classifier method used
+            exp_dir (str): directory to save graphs
 
         Returns:
             None
@@ -138,7 +141,7 @@ class Explainer:
         new_samples = []
         try:
             loaded_result = pd.read_csv(
-                os.path.join(DIR['explanation'], 'shapley_values.csv'),
+                os.path.join(exp_dir, 'shapley_values.csv'),
                 index_col=0,
                 header=0
             )
@@ -152,7 +155,7 @@ class Explainer:
         for sample in new_samples:
 
             # Generate cf_obj
-            cf_obj, factual_class, counterfactual_class = self._generate_cf_obj(sample)
+            cf_obj, factual_class, counterfactual_class = self._generate_cf_obj(sample, cls_method)
             if cf_obj is None:
                 continue
 
@@ -179,13 +182,13 @@ class Explainer:
             # Append to file
             result_df = pd.DataFrame(data, index=[data['sample']])
             result_df.to_csv(
-                os.path.join(DIR['explanation'], 'shapley_values.csv'),
+                os.path.join(exp_dir, 'shapley_values.csv'),
                 mode='a',
                 header=False,
                 index=False
             )
 
-    def _generate_cf_obj(self, sample):
+    def _generate_cf_obj(self, sample, cls_method):
         """Generate counterfactual object
 
         This method generates a counterfactual object for a given sample. 
@@ -214,7 +217,7 @@ class Explainer:
             print(f"Sample {sample} is misclassified by probability function "
                   f"(label: {original_label}, "
                   f"probability prediction: {prob_pred_label}, "
-                  f"{CLS_METHOD} prediction: {cls_pred_label}"
+                  f"{cls_method} prediction: {cls_pred_label}"
                   "), move on to the next one!")
             return None, None, None
 
@@ -242,6 +245,6 @@ class Explainer:
         print(f"{result_df}")
         print(f"Factual class: {factual_class}")
         print(f"Counterfactual class (by probability function): {prob_cf_class}")
-        print(f"Counterfactual class (by {CLS_METHOD}): {cls_cf_class}")
+        print(f"Counterfactual class (by {cls_method}): {cls_cf_class}")
 
         return cf_obj, factual_class, prob_cf_class

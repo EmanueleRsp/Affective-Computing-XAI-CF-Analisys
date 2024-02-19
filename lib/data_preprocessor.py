@@ -8,15 +8,14 @@ and other preprocessing tasks.
 
 Typical usage example:
 
+    >>> import pandas as pd
+    >>> data = pd.read_csv('data.csv')
     >>> preprocessor = DataPreprocessor(data)
-    >>> clean_data = preprocessor.clean_data()
-    >>> reduced_data = preprocessor.reduce_data()
-    >>> transformed_data = preprocessor.transform_data()
+    >>> preprocessed_data = preprocessor.preprocess('prep_method')
 """
 
 from sklearn.preprocessing import RobustScaler, StandardScaler, MinMaxScaler
-from lib.utils.path import PATH, PREP_METHOD
-from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS
+from params.attribute_specifications import ATTRIBUTES, DATA_LABELS
 
 
 class DataPreprocessor:
@@ -36,22 +35,29 @@ class DataPreprocessor:
         save_preprocessed_data(self): Saves the preprocessed data to a CSV file.
     """
 
-    def __init__(self, data):
+    def __init__(self, data, path='preprocessedDataset.csv'):
         """Initialize the DataPreprocessor class.
 
         Args:
-            data (list): The input data to be preprocessed.
+            data (DataFrame): The input data to be preprocessed.
+            path (str): File path to save preprocessed data.
         """
 
         self.data = data
+        self.path = path
+        self.prep_method = None
 
-    def preprocess(self):
+    def preprocess(self, prep_method):
         """Preprocess the data.
+        
+        Args:
+            prep_method (str): method used to scale data
 
         Returns:
             :return dataFrame: the preprocessed dataset.
         """
         print('Preprocessing the data...')
+        self.prep_method = prep_method
         # Remove missing values
         self.data.dropna(inplace=True)
         # Reduce data
@@ -78,7 +84,7 @@ class DataPreprocessor:
 
         This method applies scaling to the numerical columns of the data
         using the specified scaling method. It iterates over the data columns
-        and applies the appropriate scaler based on the PREP_METHOD.
+        and applies the appropriate scaler based on the self.prep_method.
         The scaled values are then assigned back to the respective columns in the data.
 
         Returns:
@@ -90,11 +96,11 @@ class DataPreprocessor:
         # Normalize data
         data_columns = [ATTRIBUTES[i] for i in iter(DATA_LABELS)]
         for label in data_columns:
-            if PREP_METHOD == 'MinMaxScaler':
+            if self.prep_method == 'MinMaxScaler':
                 scaler = MinMaxScaler()
-            elif PREP_METHOD == 'RobustScaler':
+            elif self.prep_method == 'RobustScaler':
                 scaler = RobustScaler()
-            elif PREP_METHOD == 'StandardScaler':
+            elif self.prep_method == 'StandardScaler':
                 scaler = StandardScaler()
             else:
                 return
@@ -104,8 +110,9 @@ class DataPreprocessor:
         """Save the preprocessed data.
 
         This method saves the preprocessed data to a CSV file.
-        The file path is specified by the constant PATH['preprocessed_dataset'].
+        The file path is specified by path.
         The data is saved without including the index column.
+            
         """
         print('Saving the preprocessed data...')
-        self.data.to_csv(PATH['preprocessed_dataset'], index=False)
+        self.data.to_csv(self.path, index=False)

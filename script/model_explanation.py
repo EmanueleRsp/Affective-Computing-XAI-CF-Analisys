@@ -8,14 +8,15 @@ understand how a model makes its predictions. This module uses these capabilitie
 to generate and plot counterfactual explanations for a trained model.
 
 """
+
 import sys
 import pandas as pd
 from lib.timer import Timer
 from lib.data_preprocessor import DataPreprocessor
 from lib.classifier import Classifier
 from lib.explainer import Explainer
-from lib.utils.path import PATH, PREP_METHOD, CLS_METHOD
-from lib.utils.attribute_specifications import ATTRIBUTES, CLASS_LABELS
+from params.path import DIR, PATH, PREP_METHOD, CLS_METHOD
+from params.attribute_specifications import ATTRIBUTES, CLASS_LABELS
 
 # Start timing
 timer = Timer()
@@ -25,8 +26,11 @@ timer.start()
 dataset = pd.read_csv(PATH['dataset'])
 
 # Preprocess the dataset
-dp = DataPreprocessor(dataset)
-dataset = dp.preprocess()
+dp = DataPreprocessor(
+    data=dataset,
+    path=PATH['preprocessed_dataset']
+)
+dataset = dp.preprocess(PREP_METHOD)
 
 # Divide dataset in features and targets
 class_columns = [ATTRIBUTES[sample] for sample in iter(CLASS_LABELS)]
@@ -35,7 +39,7 @@ y = dataset[class_columns]
 
 # Load the model
 c = Classifier(dataset, CLS_METHOD)
-if not c.load_config():
+if not c.load_config(PATH['model'], PATH['parameters']):
     print(f'ERROR: Model not found for {CLS_METHOD} with {PREP_METHOD} '
           'pre-processing method, please execute "model_generation.py" before.')
     timer.end()
@@ -54,7 +58,7 @@ TIMEOUT = 30
 
 # Explain data
 e = Explainer(SAMPLES, {'X': X, 'y': y}, c.model, TIMEOUT)
-e.plot_counterfactuals()
+e.plot_counterfactuals(DIR['explanation'], CLS_METHOD)
 
 # End timing
 timer.end()

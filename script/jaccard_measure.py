@@ -14,8 +14,8 @@ from lib.timer import Timer
 from lib.data_preprocessor import DataPreprocessor
 from lib.classifier import Classifier
 from lib.jaccard_evaluer import JaccardEvaluer
-from lib.utils.path import PATH, CLASSIFIERS, PREP_METHOD, DIR
-from lib.utils.attribute_specifications import ATTRIBUTES, CLASS_LABELS, DATA_LABELS
+from params.path import PATH, CLASSIFIERS, PREP_METHOD, DIR
+from params.attribute_specifications import ATTRIBUTES, CLASS_LABELS, DATA_LABELS
 
 # Start timing
 timer = Timer()
@@ -25,8 +25,11 @@ timer.start()
 dataset = pd.read_csv(PATH['dataset'])
 
 # Preprocess the dataset
-dp = DataPreprocessor(dataset)
-dataset = dp.preprocess()
+dp = DataPreprocessor(
+    data=dataset,
+    path=PATH['preprocessed_dataset']
+)
+dataset = dp.preprocess(PREP_METHOD)
 
 # Divide dataset in features and targets
 class_columns = [ATTRIBUTES[sample] for sample in iter(CLASS_LABELS)]
@@ -39,7 +42,7 @@ clfs = []
 for model_type in CLASSIFIERS:
     c = Classifier(dataset, model_type)
     clfs.append(c)
-    if not c.load_config():
+    if not c.load_config(PATH['model'], PATH['parameters']):
         print(f'ERROR: Model not found for {model_type} with {PREP_METHOD} '
               'pre-processing method, please execute "model_generation.py" before.')
         timer.end()

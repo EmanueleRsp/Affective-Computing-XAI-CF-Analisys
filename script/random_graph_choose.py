@@ -12,7 +12,7 @@ import shutil
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from lib.timer import Timer
-from lib.utils.path import DIR
+from params.path import DIR
 
 # Start timing
 timer = Timer()

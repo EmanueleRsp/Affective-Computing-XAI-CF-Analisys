@@ -5,18 +5,8 @@ The Classifier class is used to classify data based on certain criteria or algor
 It includes methods for segregating the data into training and testing sets, 
 performing grid search to find the best parameters, calculating the accuracy of the model,
 saving and loading the model configuration, and generating results.
-
-Typical usage example:
-
-    >>> clf = Classifier(data, model)
-    >>> clf.segregation()
-    >>> clf.grid_search()
-    >>> clf.calculate_accuracy()
-    >>> clf.save_config()
-    >>> clf.load_config()
-    >>> clf.generate_results()
-
 """
+
 import os
 import json
 import matplotlib.pyplot as plt
@@ -28,8 +18,7 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix
 import joblib
-from lib.utils.path import PATH, DIR, CLASSIFIERS
-from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS, CLASS_LABELS
+from params.attribute_specifications import ATTRIBUTES, DATA_LABELS, CLASS_LABELS
 
 
 class Classifier:
@@ -62,6 +51,8 @@ class Classifier:
             results, and confusion matrix.
     """
 
+    CLASSIFIERS = ['MLPC', 'SVC']
+
     def __init__(self, data, model):
         """Initialize the classifier.
 
@@ -79,7 +70,7 @@ class Classifier:
         }
 
         self.class_method = model
-        if self.class_method == CLASSIFIERS[0]:
+        if self.class_method == self.CLASSIFIERS[0]:
             self.model = MLPClassifier(random_state=0)
         else:
             self.model = SVC(random_state=0, probability=True)
@@ -131,7 +122,7 @@ class Classifier:
             """
 
         # Multi-layer Perceptron
-        if self.class_method == CLASSIFIERS[0]:
+        if self.class_method == self.CLASSIFIERS[0]:
             return {
                 'max_iter': [100, 200, 300]
             }
@@ -169,43 +160,59 @@ class Classifier:
         self.y_pred = self.model.predict(self.partition['x_test'])
         self.score = accuracy_score(self.partition['y_test'], self.y_pred)
 
-    def save_config(self):
+    def save_config(self,
+                    model_path='fitted_model.sav',
+                    parameters_path='modelConfiguration.json'):
         """Save the model and its parameters.
 
             This method saves the trained model and its best parameters to disk.
             The model is saved using joblib.dump() function, and the parameters
             are saved in a JSON file.
 
+            Args:
+                model_path (str): The path to save the model 
+                    (default: 'fitted_model.sav')
+                parameters_path (str): The path to save the parameters 
+                    (default: 'modelConfiguration.json')
+
             Returns:
                 None
             """
 
         print('Saving settings...')
-        joblib.dump(self.model, PATH['model'])
-        with open(PATH['parameters'], 'w', encoding='utf-8') as file:
+        joblib.dump(self.model, model_path)
+        with open(parameters_path, 'w', encoding='utf-8') as file:
             json.dump(self.grid['best_params'], file, indent=4)
 
-    def load_config(self):
+    def load_config(self,
+                    model_path='fitted_model.sav',
+                    parameters_path='modelConfiguration.json'):
         """
         Load the model in 'self.model',
         load the parameters which is based on in 'self.grid["best_parameters"]'.
+
+            Args:
+                model_path (str): The path to save the model 
+                    (default: 'fitted_model.sav')
+                parameters_path (str): The path to save the parameters 
+                    (default: 'modelConfiguration.json')
 
         Returns:
             bool: True if the model exists, else False.
         """
 
-        if not os.path.exists(PATH['model']):
+        if not os.path.exists(model_path):
             print('No model found.')
             return False
 
         print('Loading settings...')
-        self.model = joblib.load(PATH['model'])
-        with open(PATH['parameters'], 'r', encoding='utf-8') as file:
+        self.model = joblib.load(model_path)
+        with open(parameters_path, 'r', encoding='utf-8') as file:
             self.grid['best_params'] = json.load(file)
 
         return True
 
-    def generate_results(self):
+    def generate_results(self, dir_path='results', accuracy_path='accuracy.txt'):
         """Generate results.
 
             This method generates and prints the accuracy, best parameters,
@@ -213,14 +220,20 @@ class Classifier:
             It also saves the accuracy score to a file and generates
             a confusion matrix for each class.
 
-            """
+            Args:
+                dir_path (str): The path to the directory where the results
+                                will be saved (default: 'results')
+                accuracy_path (str): The path to save the accuracy score 
+                                    (default: 'accuracy.txt')
+
+        """
         print('Generating results...')
 
         # Results
         print(f'Accuracy: {self.score:.5f}')
         print(f'Best parameters: {self.grid["best_params"]}')
         print(f'Grid search results: {self.grid["results"]}')
-        with open(PATH['results'], 'a', encoding='utf-8') as file:
+        with open(accuracy_path, 'a', encoding='utf-8') as file:
             file.write(f'{str(self.score)}\n')
 
         # Confusion matrix
@@ -235,4 +248,4 @@ class Classifier:
             plt.xlabel('Predicted label')
             axs.set_xticklabels([str(int(tick.get_text()) + 1) for tick in axs.get_xticklabels()])
             axs.set_yticklabels([str(int(tick.get_text()) + 1) for tick in axs.get_yticklabels()])
-            plt.savefig(os.path.join(DIR['results'], f'{label}_confusion_matrix.png'))
+            plt.savefig(os.path.join(dir_path, f'{label}_confusion_matrix.png'))

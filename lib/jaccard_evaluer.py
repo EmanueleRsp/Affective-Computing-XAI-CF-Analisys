@@ -8,8 +8,15 @@ divided by the size of the union of the sets.
 
 Typical usage example:
 
-    >>> evaluator = JaccardEvaluator(classifier1, classifier2)
-    >>> jaccard_index = evaluator.compute_jaccard()
+    >>> import pandas
+    >>> data = pandas.read_csv('data.csv')
+    >>> X = pandas.read_csv('X.csv')
+    >>> y = pandas.read_csv('y.csv')
+    >>> evaluator = JaccardEvaluer(
+    >>>     data={'dataset': data, 'X': X, 'y': y},
+    >>>     path='path'
+    >>> )
+    >>> evaluator.compute_jaccard(clfs)
 """
 import warnings
 import pandas as pd
@@ -17,7 +24,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from cfnow import find_tabular
-from lib.utils.attribute_specifications import ATTRIBUTES, DATA_LABELS
+from params.attribute_specifications import ATTRIBUTES, DATA_LABELS
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
