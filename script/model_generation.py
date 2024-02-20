@@ -15,11 +15,11 @@ from lib.data_preprocessor import DataPreprocessor
 from lib.classifier import Classifier
 from params.path import PATH, PREP_METHOD, DIR, CLS_METHOD
 
-FORCE_MODEL_UPDATE = True
-STEPS_LIMIT = 3
+FORCE_MODEL_UPDATE = False
+STEPS_LIMIT = 1
 EXPLORE_RAW_DATA = False
 EXPLORE_PREPROCESSED_DATA = False
-TESTS_NUMBER = 20
+TESTS_NUMBER = 1
 
 # Start timing
 timer = Timer()

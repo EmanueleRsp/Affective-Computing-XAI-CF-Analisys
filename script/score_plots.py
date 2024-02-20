@@ -1,9 +1,8 @@
 """
 This module contains scripts for generating post-process plots.
 
-The scripts in this module are used to visualize the results of a machine learning process.
-This includes generating plots such as bar plots, scatter plots, and others to understand
-the scores, performance, and other aspects of the models used.
+The scripts in this module are used to visualize the results 
+of a machine learning process using plots.
 
 """
 import os

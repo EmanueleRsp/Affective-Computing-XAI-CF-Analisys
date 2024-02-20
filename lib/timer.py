@@ -38,6 +38,8 @@ class Timer:
         self.end_time = None
         if target is None:
             self.target = os.path.basename(sys.argv[0])
+        else:
+            self.target = target
 
     def start(self):
         """Starts timer"""

@@ -131,7 +131,7 @@ class DataExplorer:
         """
 
         counts = self.data[label].value_counts()
-        axs.bar(counts.sample, counts.values)
+        axs.bar(counts.sample(), counts.values)
         axs.set_xlabel(label)
         axs.set_ylabel('Count')
         axs.set_title(f'{label} bar plot')

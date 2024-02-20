@@ -27,17 +27,18 @@ CLASSIFIERS = ['MLPC', 'SVC']
 # Define the method and classifier used in the project
 PREP_METHOD = METHODS[1]
 CLS_METHOD = CLASSIFIERS[1]
-ROOT = os.path.join('works', CLS_METHOD + '-' + PREP_METHOD)
+ROOT = 'works'
+WORK_DIR = os.path.join(ROOT, f'{PREP_METHOD}-{CLS_METHOD}')
 
 # Define the directories used in the project
 DIR = {
     'raw_data': 'resource',
     'raw_data_img': os.path.join('img', 'raw_data'),
-    'csv_dir': os.path.join(ROOT, 'data'),
-    'conf_dir': os.path.join(ROOT, 'config'),
-    'preprocessed_data_img': os.path.join(ROOT, 'img', 'preprocessed_data'),
-    'results': os.path.join(ROOT, 'results'),
-    'explanation': os.path.join(ROOT, 'img', 'explained_CF')
+    'csv_dir': os.path.join(WORK_DIR, 'data'),
+    'conf_dir': os.path.join(WORK_DIR, 'config'),
+    'preprocessed_data_img': os.path.join(WORK_DIR, 'img', 'preprocessed_data'),
+    'results': os.path.join(WORK_DIR, 'results'),
+    'explanation': os.path.join(WORK_DIR, 'img', 'explained_CF')
 }
 
 # Define the file names used in the project
