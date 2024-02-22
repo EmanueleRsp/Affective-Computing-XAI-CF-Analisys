@@ -25,10 +25,10 @@ METHODS = ['No normalization', 'MinMaxScaler', 'StandardScaler', 'RobustScaler']
 CLASSIFIERS = ['MLPC', 'SVC']
 
 # Define the method and classifier used in the project
-PREP_METHOD = METHODS[1]
-CLS_METHOD = CLASSIFIERS[1]
+PREP_METHOD = METHODS[0]
+CLS_METHOD = CLASSIFIERS[0]
 ROOT = 'works'
-WORK_DIR = os.path.join(ROOT, f'{PREP_METHOD}-{CLS_METHOD}')
+WORK_DIR = os.path.join(ROOT, f'{CLS_METHOD}-{PREP_METHOD}')
 
 # Define the directories used in the project
 DIR = {

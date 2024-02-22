@@ -16,10 +16,10 @@ from lib.classifier import Classifier
 from params.path import PATH, PREP_METHOD, DIR, CLS_METHOD
 
 FORCE_MODEL_UPDATE = False
-STEPS_LIMIT = 1
+STEPS_LIMIT = 3
 EXPLORE_RAW_DATA = False
 EXPLORE_PREPROCESSED_DATA = False
-TESTS_NUMBER = 1
+TESTS_NUMBER = 20
 
 # Start timing
 timer = Timer()
@@ -77,7 +77,7 @@ for i in range(TESTS_NUMBER):
     # Look for an existing model
     if not c.load_config(PATH['model'],
                          PATH['parameters']
-            ) or (FORCE_MODEL_UPDATE and i == 0):
+                         ) or (FORCE_MODEL_UPDATE and i == 0):
         # Perform classification
         g_timer = Timer('Grid Search')
         g_timer.start()

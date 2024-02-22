@@ -130,12 +130,11 @@ class DataExplorer:
             None
         """
 
-        counts = self.data[label].value_counts()
-        axs.bar(counts.sample(), counts.values)
+        self.data[label].value_counts().sort_index().plot(kind='bar', ax=axs)
         axs.set_xlabel(label)
-        axs.set_ylabel('Count')
+        axs.set_ylabel('Frequency')
         axs.set_title(f'{label} bar plot')
-        axs.grid(True)
+        axs.tight_layout()
         axs.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     def _bw_plot(self, index, label):
