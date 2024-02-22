@@ -2,7 +2,7 @@
 This module contains scripts for generating post-process plots.
 
 The scripts in this module are used to visualize the results 
-of a machine learning process using plots.
+of a hyper-params optimization process using histograms.
 
 """
 import os
