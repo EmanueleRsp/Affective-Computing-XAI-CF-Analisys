@@ -3,8 +3,9 @@
 This is my thesis work, made for bachelor thesis in Computer Engineering in Pisa.
 
 It represents the project developed during the analysis. Code is implemented in Python, it's written in english and well commented, while thesis documentation is in italian (you can find it in [Tesi.pdf](/Tesi.pdf)).
+The code is based on a modified version of _cfnow_ and _counterplot_ libraries, developed to resolve some issues linked to the type of database analyzed and the task I had (_non-binary classification problem_). To look up to the main changes I made, you can refer to the **Chapter 5** of the thesis doc linked before.
 
-To provide a quick overview, the abstract follows here (for the italian version go to [Tesi.pdf](/Tesi.pdf)).
+To provide a quick overview, the abstract follows here (for the italian version go to the link above).
 
 ## Abstract (english version)
 
